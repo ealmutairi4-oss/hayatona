@@ -22,9 +22,23 @@ function housekeeping() {
 housekeeping();
 setInterval(housekeeping, 60 * 60 * 1000).unref();
 
+/**
+ * إنشاء أول حساب مدير تلقائيًا من متغيرات البيئة (مفيد في الاستضافات مثل Render).
+ * يعمل فقط إذا لم يوجد أي حساب إدارة، ولا يغيّر الحسابات الموجودة أبدًا.
+ */
 const { n } = db.get().prepare('SELECT COUNT(*) AS n FROM admins').get();
 if (n === 0) {
-  console.warn('⚠ لا توجد حسابات إدارة. أنشئ حسابًا: npm run create-admin -- <username> admin');
+  const username = (process.env.ADMIN_USERNAME || '').trim();
+  const password = process.env.ADMIN_PASSWORD || '';
+  if (/^[A-Za-z0-9._-]{3,40}$/.test(username) && password.length >= 12) {
+    const { hashPassword } = require('./src/auth');
+    db.get()
+      .prepare("INSERT INTO admins (username, display_name, password_hash, role) VALUES (?, ?, ?, 'admin')")
+      .run(username, process.env.ADMIN_DISPLAY_NAME || 'مدير النظام', hashPassword(password));
+    console.log(`تم إنشاء حساب المدير الأول: ${username}`);
+  } else {
+    console.warn('⚠ لا توجد حسابات إدارة. اضبط ADMIN_USERNAME وADMIN_PASSWORD (12 حرفًا على الأقل)، أو نفّذ: npm run create-admin -- <username> admin');
+  }
 }
 
 const server = createApp().listen(config.port, config.host, () => {
