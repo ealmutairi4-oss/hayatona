@@ -12,22 +12,22 @@ const config = require('./config');
  */
 const DEFAULT_RULES = [
   // نبض القلب بعد اختبار الخطوة (3 دقائق) — عدد صحيح
-  { test: 'hr', code: 'hr_pro',        min: null, minInc: 0, max: 79,  maxInc: 0, label: 'محترف',          points: -9 },
-  { test: 'hr', code: 'hr_excellent',  min: 79,   minInc: 1, max: 84,  maxInc: 1, label: 'ممتاز',          points: -6 },
-  { test: 'hr', code: 'hr_very_good',  min: 85,   minInc: 1, max: 98,  maxInc: 1, label: 'جيد جدًا',       points: -3 },
-  { test: 'hr', code: 'hr_good',       min: 99,   minInc: 1, max: 108, maxInc: 1, label: 'جيد',            points: 0 },
-  { test: 'hr', code: 'hr_average',    min: 109,  minInc: 1, max: 117, maxInc: 1, label: 'المتوسط',        points: 3 },
-  { test: 'hr', code: 'hr_below_avg',  min: 118,  minInc: 1, max: 126, maxInc: 1, label: 'أقل من المتوسط', points: 6 },
-  { test: 'hr', code: 'hr_weak',       min: 127,  minInc: 1, max: 140, maxInc: 1, label: 'ضعيف',           points: 9 },
-  { test: 'hr', code: 'hr_poor',       min: 140,  minInc: 0, max: null, maxInc: 0, label: 'فقير',          points: 12 },
+  { test: 'hr', code: 'hr_pro',        min: null, minInc: 0, max: 79,  maxInc: 0, label: 'محترف',          points: -9, labelEn: 'Professional' },
+  { test: 'hr', code: 'hr_excellent',  min: 79,   minInc: 1, max: 84,  maxInc: 1, label: 'ممتاز',          points: -6, labelEn: 'Excellent' },
+  { test: 'hr', code: 'hr_very_good',  min: 85,   minInc: 1, max: 98,  maxInc: 1, label: 'جيد جدًا',       points: -3, labelEn: 'Very good' },
+  { test: 'hr', code: 'hr_good',       min: 99,   minInc: 1, max: 108, maxInc: 1, label: 'جيد',            points: 0, labelEn: 'Good' },
+  { test: 'hr', code: 'hr_average',    min: 109,  minInc: 1, max: 117, maxInc: 1, label: 'المتوسط',        points: 3, labelEn: 'Average' },
+  { test: 'hr', code: 'hr_below_avg',  min: 118,  minInc: 1, max: 126, maxInc: 1, label: 'أقل من المتوسط', points: 6, labelEn: 'Below average' },
+  { test: 'hr', code: 'hr_weak',       min: 127,  minInc: 1, max: 140, maxInc: 1, label: 'ضعيف',           points: 9, labelEn: 'Weak' },
+  { test: 'hr', code: 'hr_poor',       min: 140,  minInc: 0, max: null, maxInc: 0, label: 'فقير',          points: 12, labelEn: 'Poor' },
 
   // نسبة الدهون في الجسم PBF — تقبل الكسور العشرية
-  { test: 'pbf', code: 'pbf_essential', min: 10, minInc: 1, max: 14,   maxInc: 0, label: 'الدهون الأساسية (ضرورية للحياة)', points: 1 },
-  { test: 'pbf', code: 'pbf_athlete',   min: 14, minInc: 1, max: 21,   maxInc: 0, label: 'رياضية (Athletes)',             points: -2 },
-  { test: 'pbf', code: 'pbf_fitness',   min: 21, minInc: 1, max: 25,   maxInc: 0, label: 'لياقة عالية (Fitness)',         points: -1 },
-  { test: 'pbf', code: 'pbf_normal',    min: 25, minInc: 1, max: 32,   maxInc: 0, label: 'مقبولة / طبيعية',               points: 0 },
-  { test: 'pbf', code: 'pbf_overfat',   min: 32, minInc: 1, max: 40,   maxInc: 0, label: 'زيادة دهون (Overfat)',          points: 1 },
-  { test: 'pbf', code: 'pbf_obese',     min: 40, minInc: 1, max: null, maxInc: 0, label: 'سمنة',                          points: 2 },
+  { test: 'pbf', code: 'pbf_essential', min: 10, minInc: 1, max: 14,   maxInc: 0, label: 'الدهون الأساسية (ضرورية للحياة)', points: 1, labelEn: 'Essential fat (vital for life)' },
+  { test: 'pbf', code: 'pbf_athlete',   min: 14, minInc: 1, max: 21,   maxInc: 0, label: 'رياضية (Athletes)',             points: -2, labelEn: 'Athletes' },
+  { test: 'pbf', code: 'pbf_fitness',   min: 21, minInc: 1, max: 25,   maxInc: 0, label: 'لياقة عالية (Fitness)',         points: -1, labelEn: 'Fitness' },
+  { test: 'pbf', code: 'pbf_normal',    min: 25, minInc: 1, max: 32,   maxInc: 0, label: 'مقبولة / طبيعية',               points: 0, labelEn: 'Acceptable / normal' },
+  { test: 'pbf', code: 'pbf_overfat',   min: 32, minInc: 1, max: 40,   maxInc: 0, label: 'زيادة دهون (Overfat)',          points: 1, labelEn: 'Overfat' },
+  { test: 'pbf', code: 'pbf_obese',     min: 40, minInc: 1, max: null, maxInc: 0, label: 'سمنة',                          points: 2, labelEn: 'Obesity' },
 ];
 
 let db;
@@ -54,6 +54,7 @@ function migrate(d) {
       max_value     REAL,
       max_inclusive INTEGER NOT NULL DEFAULT 0,
       label         TEXT    NOT NULL,
+      label_en      TEXT,
       points        INTEGER NOT NULL,
       sort_order    INTEGER NOT NULL
     );
@@ -110,16 +111,24 @@ function migrate(d) {
 }
 
 function seedRules(d) {
+  // ترقية قواعد البيانات القديمة: إضافة عمود التسمية الإنجليزية
+  const cols = d.prepare('PRAGMA table_info(scoring_rules)').all().map((c) => c.name);
+  if (!cols.includes('label_en')) d.exec('ALTER TABLE scoring_rules ADD COLUMN label_en TEXT');
+
   const { n } = d.prepare('SELECT COUNT(*) AS n FROM scoring_rules').get();
-  if (n > 0) return;
+  if (n > 0) {
+    const fill = d.prepare('UPDATE scoring_rules SET label_en = ? WHERE code = ? AND label_en IS NULL');
+    DEFAULT_RULES.forEach((r) => fill.run(r.labelEn, r.code));
+    return;
+  }
   const insert = d.prepare(`
-    INSERT INTO scoring_rules (test, code, min_value, min_inclusive, max_value, max_inclusive, label, points, sort_order)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO scoring_rules (test, code, min_value, min_inclusive, max_value, max_inclusive, label, label_en, points, sort_order)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
   d.exec('BEGIN');
   try {
     DEFAULT_RULES.forEach((r, i) =>
-      insert.run(r.test, r.code, r.min, r.minInc, r.max, r.maxInc, r.label, r.points, i + 1));
+      insert.run(r.test, r.code, r.min, r.minInc, r.max, r.maxInc, r.label, r.labelEn, r.points, i + 1));
     d.exec('COMMIT');
   } catch (err) {
     d.exec('ROLLBACK');

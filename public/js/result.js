@@ -4,17 +4,20 @@
   const stateEl = document.getElementById('state');
   const resultEl = document.getElementById('result');
   const $ = (id) => document.getElementById(id);
+  const T = (k, v) => I18N.t(k, v);
 
-  function showState(title, text) {
+  function showState(titleKey, textKey, serverText) {
+    stateEl.hidden = false;
+    resultEl.hidden = true;
     stateEl.innerHTML = '';
     const h = document.createElement('h2');
-    h.textContent = title;
+    h.textContent = T(titleKey);
     const p = document.createElement('p');
-    p.textContent = text;
+    p.textContent = serverText || T(textKey);
     const a = document.createElement('a');
     a.className = 'btn';
     a.href = '/';
-    a.textContent = 'العودة إلى صفحة الإدخال';
+    a.textContent = T('res.back');
     a.style.marginTop = '24px';
     stateEl.append(h, p, a);
   }
@@ -50,9 +53,9 @@
     $('r-diff').textContent = d > 0 ? `+${d}` : String(d);
     let text;
     let tone;
-    if (d < 0) { text = `عمرك البيولوجي التقديري أصغر من عمرك الزمني بـ ${BA.years(d)}`; tone = 'good'; }
-    else if (d > 0) { text = `عمرك البيولوجي التقديري أكبر من عمرك الزمني بـ ${BA.years(d)}`; tone = 'attention'; }
-    else { text = 'عمرك البيولوجي التقديري مساوٍ لعمرك الزمني'; tone = 'neutral'; }
+    if (d < 0) { text = T('res.younger', { years: BA.years(d) }); tone = 'good'; }
+    else if (d > 0) { text = T('res.older', { years: BA.years(d) }); tone = 'attention'; }
+    else { text = T('res.equal'); tone = 'neutral'; }
     $('r-diff-text').textContent = text;
     $('r-diff-banner').className = `diff-banner tone-${tone}`;
 
@@ -66,29 +69,35 @@
 
     stateEl.hidden = true;
     resultEl.hidden = false;
-    document.title = `العمر البيولوجي — ${r.name}`;
+    document.title = `${T('app.title')} — ${r.name}`;
   }
 
   $('print-btn').addEventListener('click', () => window.print());
 
+  const token = decodeURIComponent(window.location.hash.slice(1));
+  const cacheKey = () => `ba-result:${I18N.lang}:${token}`;
+
   async function load() {
-    const token = decodeURIComponent(window.location.hash.slice(1));
-    if (!token) {
-      showState('لا توجد نتيجة لعرضها', 'يرجى إدخال بياناتك ونتائج الاختبارات أولًا.');
-      return;
-    }
+    if (!token) { showState('res.noneTitle', 'res.noneText'); return; }
     try {
-      const cached = sessionStorage.getItem(`ba-result:${token}`);
+      const cached = sessionStorage.getItem(cacheKey());
       if (cached) { render(JSON.parse(cached)); return; }
     } catch { /* المتابعة إلى الخادم */ }
 
     try {
       const { ok, data } = await BA.api(`/api/results/${encodeURIComponent(token)}`);
-      if (ok && data.result) render(data.result);
-      else showState('النتيجة غير متاحة', data.error || 'انتهت صلاحية رابط النتيجة أو أنه غير صحيح.');
+      if (ok && data.result) {
+        try { sessionStorage.setItem(cacheKey(), JSON.stringify(data.result)); } catch { /* اختياري */ }
+        render(data.result);
+      } else {
+        showState('res.missingTitle', 'res.missingText', data.error);
+      }
     } catch {
-      showState('تعذر تحميل النتيجة', 'تحقق من اتصالك بالإنترنت ثم أعد تحميل الصفحة.');
+      showState('res.failTitle', 'res.failText');
     }
   }
+
+  // عند تغيير اللغة: إعادة تحميل النتيجة بالتصنيفات والتوصيات باللغة الجديدة
+  document.addEventListener('langchange', load);
   load();
 })();

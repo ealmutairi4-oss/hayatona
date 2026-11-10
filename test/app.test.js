@@ -9,6 +9,7 @@ const { classify, compute } = require('../src/scoring');
 const { validateAssessment, MSG } = require('../src/validation');
 const { hashPassword } = require('../src/auth');
 const { createApp } = require('../src/app');
+const { t } = require('../src/i18n');
 
 let server;
 let base;
@@ -94,7 +95,8 @@ test('PBF أقل من 10% يُرفض برسالة المواصفات ولا يُ
   const before = db.get().prepare('SELECT COUNT(*) AS n FROM assessments').get().n;
   const { status, data } = await post('/api/assessments', { ...valid, pbf: '8' });
   assert.equal(status, 422);
-  assert.equal(data.fields.pbf, MSG.outOfRange);
+  assert.equal(data.fields.pbf, t('ar', 'v.outOfRange'));
+  assert.equal(data.fields.pbf, 'القيمة خارج نطاق التصنيف المعتمد. يرجى مراجعة قراءة الجهاز أو التأكد من إدخالها.');
   const afterCount = db.get().prepare('SELECT COUNT(*) AS n FROM assessments').get().n;
   assert.equal(afterCount, before);
 });
@@ -203,4 +205,33 @@ test('الحذف الجماعي حسب التاريخ وسجل التدقيق', 
   const audit = await fetch(`${base}/api/admin/audit`, { headers: { Cookie: cookie } }).then((r) => r.json());
   assert.ok(audit.items.some((a) => a.action === 'purge_records'));
   assert.ok(audit.items.some((a) => a.action === 'create_user'));
+});
+
+// ───────── اللغة الإنجليزية ─────────
+test('English: validation messages, labels and recommendations', async () => {
+  const bad = await post('/api/assessments', { ...valid, pbf: '8' }, { 'X-Lang': 'en' });
+  assert.equal(bad.status, 422);
+  assert.match(bad.data.fields.pbf, /outside the approved classification range/);
+
+  const ok = await post('/api/assessments', valid, { 'X-Lang': 'en' });
+  assert.equal(ok.status, 201);
+  assert.equal(ok.data.result.heartRate.label, 'Very good');
+  assert.equal(ok.data.result.pbf.label, 'Athletes');
+  assert.equal(ok.data.result.genderLabel, 'Male');
+  assert.match(ok.data.result.recommendations.general[0].text, /World Health Organization/);
+
+  // نفس النتيجة بالعربية عند الطلب بدون لغة
+  const ar = await fetch(`${base}/api/results/${ok.data.token}`).then((r) => r.json());
+  assert.equal(ar.result.heartRate.label, 'جيد جدًا');
+  const en = await fetch(`${base}/api/results/${ok.data.token}`, { headers: { 'X-Lang': 'en' } }).then((r) => r.json());
+  assert.equal(en.result.pbf.label, 'Athletes');
+
+  const cookie = await login('boss', 'correct-horse-battery');
+  const stats = await fetch(`${base}/api/admin/stats`, { headers: { Cookie: cookie, 'X-Lang': 'en' } }).then((r) => r.json());
+  assert.equal(stats.hrDistribution[0].label, 'Professional');
+  assert.equal(stats.byGender[0].label, 'Male');
+  const csv = await fetch(`${base}/api/admin/export/stats.csv?lang=en`, { headers: { Cookie: cookie } }).then((r) => r.text());
+  assert.ok(csv.includes('Step test classification distribution'));
+  const err = await fetch(`${base}/api/admin/stats`, { headers: { 'X-Lang': 'en' } }).then((r) => r.json());
+  assert.equal(err.error, 'Please sign in.');
 });

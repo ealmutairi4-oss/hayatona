@@ -1,19 +1,11 @@
 'use strict';
 
+// رموز رسائل التحقق — تُترجم في src/i18n.js بالمفاتيح v.<code>
 const MSG = {
-  required: 'هذا الحقل مطلوب.',
-  nameLength: 'يرجى إدخال اسم بين حرفين و100 حرف.',
-  gender: 'يرجى اختيار الجنس.',
-  ageNumber: 'يرجى إدخال العمر رقمًا صحيحًا بالسنوات.',
-  ageMin: 'يجب أن يكون العمر 18 سنة فأكثر.',
-  ageMax: 'يرجى التأكد من العمر المدخل.',
-  phone: 'يرجى إدخال رقم تواصل صحيح (من 9 إلى 15 رقمًا).',
-  hrNumber: 'يرجى إدخال النبض عددًا صحيحًا بدون كسور.',
-  hrPositive: 'يجب أن يكون النبض أكبر من صفر.',
-  hrMax: 'قيمة النبض غير منطقية. يرجى التأكد من القراءة.',
-  pbfNumber: 'يرجى إدخال نسبة الدهون رقمًا (تُقبل الكسور العشرية).',
-  pbfRange: 'يجب أن تكون نسبة الدهون بين 0% و100%.',
-  outOfRange: 'القيمة خارج نطاق التصنيف المعتمد. يرجى مراجعة قراءة الجهاز أو التأكد من إدخالها.',
+  required: 'required', nameLength: 'nameLength', gender: 'gender',
+  ageNumber: 'ageNumber', ageMin: 'ageMin', ageMax: 'ageMax', phone: 'phone',
+  hrNumber: 'hrNumber', hrPositive: 'hrPositive', hrMax: 'hrMax',
+  pbfNumber: 'pbfNumber', pbfRange: 'pbfRange', outOfRange: 'outOfRange',
 };
 
 const HR_MAX = 250; // حد منطقية فسيولوجية لاكتشاف أخطاء الإدخال
@@ -42,7 +34,7 @@ function parseDecimal(raw) {
 
 /**
  * التحقق من صيغة المدخلات وصلاحيتها. لا يعتمد على جداول التصنيف.
- * يعيد { errors, values } — values صالحة فقط إذا كانت errors فارغة.
+ * يعيد { errors, values } — errors تحوي رموز الرسائل، وvalues صالحة فقط إذا كانت errors فارغة.
  */
 function validateAssessment(body = {}) {
   const errors = {};

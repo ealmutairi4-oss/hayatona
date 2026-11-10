@@ -1,6 +1,7 @@
 'use strict';
 
 const db = require('./db');
+const { t } = require('./i18n');
 
 const AGE_GROUP_SQL = `
   CASE
@@ -12,7 +13,6 @@ const AGE_GROUP_SQL = `
   END`;
 
 const AGE_GROUPS = ['18–29', '30–39', '40–49', '50–59', '60+'];
-const GENDER_LABEL = { male: 'ذكر', female: 'أنثى' };
 
 /** يبني شرط WHERE من مرشحات التاريخ والجنس والفئة العمرية. */
 function buildFilter(query = {}) {
@@ -65,9 +65,10 @@ function shapeAgg(row) {
   };
 }
 
-function distribution(test, column, where, params) {
+function distribution(test, column, where, params, lang) {
   const d = db.get();
-  const rules = d.prepare('SELECT code, label, points FROM scoring_rules WHERE test = ? ORDER BY sort_order').all(test);
+  const rules = d.prepare('SELECT code, label, label_en, points FROM scoring_rules WHERE test = ? ORDER BY sort_order').all(test)
+    .map((r) => ({ ...r, label: lang === 'en' && r.label_en ? r.label_en : r.label }));
   const counts = new Map(
     d.prepare(`SELECT ${column} AS code, COUNT(*) AS n FROM assessments ${where} GROUP BY ${column}`)
       .all(...params)
@@ -76,7 +77,8 @@ function distribution(test, column, where, params) {
   return rules.map((r) => ({ code: r.code, label: r.label, points: r.points, count: counts.get(r.code) || 0 }));
 }
 
-function getStats(query) {
+function getStats(query, lang = 'ar') {
+  const G = (g) => t(lang, `gender_${g}`);
   const d = db.get();
   const { where, params } = buildFilter(query);
 
@@ -85,7 +87,7 @@ function getStats(query) {
   const byGenderRows = d.prepare(`SELECT gender, ${AGG_COLUMNS} FROM assessments ${where} GROUP BY gender`).all(...params);
   const byGender = ['male', 'female'].map((g) => {
     const row = byGenderRows.find((r) => r.gender === g) || {};
-    return { key: g, label: GENDER_LABEL[g], ...shapeAgg(row) };
+    return { key: g, label: G(g), ...shapeAgg(row) };
   });
 
   const byAgeRows = d.prepare(`SELECT ${AGE_GROUP_SQL} AS grp, ${AGG_COLUMNS} FROM assessments ${where} GROUP BY grp`).all(...params);
@@ -102,18 +104,18 @@ function getStats(query) {
   for (const g of ['male', 'female']) {
     for (const a of AGE_GROUPS) {
       const row = crossRows.find((r) => r.gender === g && r.grp === a);
-      if (row) byGenderAgeGroup.push({ gender: g, genderLabel: GENDER_LABEL[g], ageGroup: a, ...shapeAgg(row) });
+      if (row) byGenderAgeGroup.push({ gender: g, genderLabel: G(g), ageGroup: a, ...shapeAgg(row) });
     }
   }
 
   return {
     summary,
-    hrDistribution: distribution('hr', 'hr_code', where, params),
-    pbfDistribution: distribution('pbf', 'pbf_code', where, params),
+    hrDistribution: distribution('hr', 'hr_code', where, params, lang),
+    pbfDistribution: distribution('pbf', 'pbf_code', where, params, lang),
     byGender,
     byAgeGroup,
     byGenderAgeGroup,
   };
 }
 
-module.exports = { getStats, buildFilter, AGE_GROUP_SQL, AGE_GROUPS, GENDER_LABEL };
+module.exports = { getStats, buildFilter, AGE_GROUP_SQL, AGE_GROUPS };

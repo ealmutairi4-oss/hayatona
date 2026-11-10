@@ -24,6 +24,13 @@ function classify(test, value) {
   return rule ? { code: rule.code, label: rule.label, points: rule.points } : null;
 }
 
+/** تسمية التصنيف باللغة المطلوبة (تُستخدم عند العرض؛ السجل يحفظ الرمز والتسمية العربية). */
+function labelFor(code, lang, fallback) {
+  const row = db.get().prepare('SELECT label, label_en FROM scoring_rules WHERE code = ?').get(code);
+  if (!row) return fallback;
+  return lang === 'en' && row.label_en ? row.label_en : row.label;
+}
+
 /**
  * معادلات الموقع:
  *   مجموع النقاط = نقاط اختبار الخطوة + نقاط PBF
@@ -36,4 +43,4 @@ function compute(age, hr, pbf) {
   return { totalPoints, bioAge, ageDiff: bioAge - age };
 }
 
-module.exports = { classify, compute, loadRules, inRange };
+module.exports = { classify, compute, loadRules, inRange, labelFor };

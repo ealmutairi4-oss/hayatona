@@ -1,11 +1,12 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-title-key="adm.pageTitle">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#052D3A">
   <meta name="robots" content="noindex, nofollow">
   <title>لوحة الإدارة — العمر البيولوجي</title>
+  <script src="/js/i18n.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
@@ -16,233 +17,238 @@
 <body class="admin">
   <header class="site-header">
     <div class="site-header__inner">
-      <span class="logo"><img src="/assets/logos/bae-systems.png" alt="BAE Systems" data-fallback="BAE Systems"></span>
-      <div class="site-header__title">لوحة الإدارة — العمر البيولوجي</div>
-      <span class="logo"><img src="/assets/logos/hayatna.png" alt="عيادات حياتنا" data-fallback="عيادات حياتنا"></span>
+      <span class="logo logo--bae"><img src="/assets/logos/bae-systems.png" alt="BAE Systems" data-i18n-alt="brand.bae" data-fallback="BAE Systems"></span>
+      <div class="site-header__title" data-i18n="adm.headerTitle">لوحة الإدارة — العمر البيولوجي</div>
+      <div class="header-end">
+        <span class="logo logo--hayatna"><img src="/assets/logos/hayatna.png" alt="عيادات حياتنا" data-i18n-alt="brand.hayatna" data-fallback="عيادات حياتنا"></span>
+      </div>
     </div>
   </header>
 
   <main class="wide" id="app" hidden>
     <div class="topbar">
       <div>
-        <h1 class="page-title">التقارير والإحصاءات</h1>
+        <h1 class="page-title" id="page-title" data-i18n="adm.reportsTitle">التقارير والإحصاءات</h1>
         <p class="hint" id="who"></p>
       </div>
-      <button class="btn btn--ghost btn--sm" id="logout-btn" type="button">تسجيل الخروج</button>
+      <button class="btn btn--ghost btn--sm" id="logout-btn" type="button" data-i18n="adm.logout">تسجيل الخروج</button>
     </div>
 
-    <nav class="views" aria-label="أقسام لوحة الإدارة">
-      <button class="view-btn is-active" type="button" data-view="reports" aria-current="page">التقارير</button>
-      <button class="view-btn admin-only" type="button" data-view="records" hidden>السجلات</button>
-      <button class="view-btn admin-only" type="button" data-view="users" hidden>الحسابات</button>
-      <button class="view-btn admin-only" type="button" data-view="audit" hidden>سجل التدقيق</button>
-      <button class="view-btn" type="button" data-view="account">حسابي</button>
+    <nav class="views">
+      <button class="view-btn is-active" type="button" data-view="reports" aria-current="page" data-i18n="nav.reports">التقارير</button>
+      <button class="view-btn admin-only" type="button" data-view="records" hidden data-i18n="nav.records">السجلات</button>
+      <button class="view-btn admin-only" type="button" data-view="users" hidden data-i18n="nav.users">الحسابات</button>
+      <button class="view-btn admin-only" type="button" data-view="audit" hidden data-i18n="nav.audit">سجل التدقيق</button>
+      <button class="view-btn" type="button" data-view="account" data-i18n="nav.account">حسابي</button>
     </nav>
 
+    <!-- ═════════ التقارير ═════════ -->
     <div class="view" data-view="reports">
-    <!-- المرشحات -->
-    <form class="filters card" id="filters" aria-label="مرشحات التقارير">
-      <div class="field">
-        <label class="label" for="f-from">من تاريخ</label>
-        <input class="input" type="date" id="f-from" name="from">
-      </div>
-      <div class="field">
-        <label class="label" for="f-to">إلى تاريخ</label>
-        <input class="input" type="date" id="f-to" name="to">
-      </div>
-      <div class="field">
-        <label class="label" for="f-gender">الجنس</label>
-        <select class="input" id="f-gender" name="gender">
-          <option value="">الكل</option>
-          <option value="male">ذكر</option>
-          <option value="female">أنثى</option>
-        </select>
-      </div>
-      <div class="field">
-        <label class="label" for="f-age">الفئة العمرية</label>
-        <select class="input" id="f-age" name="ageGroup">
-          <option value="">الكل</option>
-          <option>18–29</option><option>30–39</option><option>40–49</option><option>50–59</option><option>60+</option>
-        </select>
-      </div>
-      <div class="filters__actions">
-        <button class="btn btn--sm" type="submit">تطبيق</button>
-        <button class="btn btn--ghost btn--sm" type="reset">مسح</button>
-      </div>
-    </form>
-
-    <!-- المؤشرات الرئيسية -->
-    <section class="kpis" aria-label="المؤشرات الرئيسية">
-      <div class="kpi"><div class="kpi__label">عدد التقييمات</div><div class="kpi__value num" id="k-count">—</div></div>
-      <div class="kpi"><div class="kpi__label">متوسط مجموع النقاط</div><div class="kpi__value num" id="k-points">—</div></div>
-      <div class="kpi"><div class="kpi__label">متوسط العمر التقديري</div><div class="kpi__value num" id="k-bio">—</div><div class="kpi__sub" id="k-age"></div></div>
-      <div class="kpi"><div class="kpi__label">متوسط الفارق</div><div class="kpi__value num" id="k-diff">—</div><div class="kpi__sub" id="k-split"></div></div>
-    </section>
-
-    <!-- التوزيعات -->
-    <div class="two-col">
-      <section class="card">
-        <h2 class="card-title">توزيع تصنيفات اختبار الخطوة</h2>
-        <div class="bars" id="hr-dist"></div>
-      </section>
-      <section class="card">
-        <h2 class="card-title">توزيع تصنيفات نسبة الدهون PBF</h2>
-        <div class="bars" id="pbf-dist"></div>
-      </section>
-    </div>
-
-    <!-- حسب الجنس والفئة العمرية -->
-    <section class="card mt-4">
-      <h2 class="card-title">النتائج حسب الجنس والفئة العمرية</h2>
-      <div class="tabs" role="tablist">
-        <button class="tab is-active" role="tab" aria-selected="true" data-tab="gender" type="button">حسب الجنس</button>
-        <button class="tab" role="tab" aria-selected="false" data-tab="age" type="button">حسب الفئة العمرية</button>
-        <button class="tab" role="tab" aria-selected="false" data-tab="cross" type="button">الجنس × الفئة العمرية</button>
-      </div>
-      <div class="table-scroll"><table class="table" id="group-table"></table></div>
-    </section>
-
-    <!-- التصدير -->
-    <section class="card mt-4">
-      <h2 class="card-title">تصدير التقارير</h2>
-      <p class="hint mb-4">تُطبق المرشحات الحالية على ملفات التصدير. التقارير لا تتضمن الاسم أو رقم التواصل افتراضيًا.</p>
-      <div class="export-row">
-        <a class="btn btn--sm" id="exp-stats" href="#">تقرير إحصائي مجمع (CSV)</a>
-        <a class="btn btn--ghost btn--sm" id="exp-records" href="#">سجلات بدون بيانات شخصية (CSV)</a>
-        <a class="btn btn--danger btn--sm admin-only" id="exp-pii" href="#" hidden>سجلات مع الاسم ورقم التواصل</a>
-      </div>
-    </section>
-
-    <!-- جداول التصنيف -->
-    <details class="card mt-4 rules">
-      <summary class="card-title">جداول التصنيف المعتمدة (من قاعدة البيانات)</summary>
-      <div class="two-col mt-4">
-        <div class="table-scroll"><table class="table" id="rules-hr"></table></div>
-        <div class="table-scroll"><table class="table" id="rules-pbf"></table></div>
-      </div>
-    </details>
-    </div>
-
-    <!-- السجلات الفردية — admin فقط -->
-    <div class="view" data-view="records" hidden>
-    <p class="hint mb-4">تُطبق مرشحات التاريخ والجنس والفئة العمرية من قسم «التقارير» على هذه القائمة أيضًا.</p>
-    <section class="card" id="records-section">
-      <div class="records-head">
-        <h2 class="card-title">السجلات الفردية</h2>
-        <form id="search-form" class="search" role="search">
-          <label class="sr-only" for="q">بحث</label>
-          <input class="input" id="q" type="search" placeholder="بحث بالاسم أو الرقم أو رقم السجل">
-        </form>
-      </div>
-      <div class="table-scroll">
-        <table class="table table--records">
-          <thead>
-            <tr>
-              <th>#</th><th>الاسم</th><th>الجنس</th><th>العمر</th><th>رقم التواصل</th>
-              <th>النبض</th><th>تصنيف النبض</th><th>PBF</th><th>تصنيف PBF</th>
-              <th>النقاط</th><th>العمر التقديري</th><th>الفارق</th><th>التاريخ</th><th></th>
-            </tr>
-          </thead>
-          <tbody id="records-body"></tbody>
-        </table>
-      </div>
-      <div class="pager">
-        <button class="btn btn--ghost btn--sm" id="prev-page" type="button">السابق</button>
-        <span id="page-info" class="hint"></span>
-        <button class="btn btn--ghost btn--sm" id="next-page" type="button">التالي</button>
-      </div>
-    </section>
-
-    <section class="card mt-4 danger-zone">
-      <h2 class="card-title">حذف السجلات القديمة</h2>
-      <p class="hint mb-4">تنفيذ سياسة الاحتفاظ بالبيانات: يحذف نهائيًا كل السجلات المنشأة قبل التاريخ المحدد. لا يمكن التراجع عن الحذف، ويُسجَّل في سجل التدقيق.</p>
-      <form class="inline-form" id="purge-form">
+      <form class="filters card" id="filters" data-i18n-aria="flt.aria">
         <div class="field">
-          <label class="label" for="purge-before">حذف السجلات قبل تاريخ</label>
-          <input class="input" type="date" id="purge-before" required>
+          <label class="label" for="f-from" data-i18n="flt.from">من تاريخ</label>
+          <input class="input" type="date" id="f-from" name="from">
         </div>
-        <button class="btn btn--danger btn--sm" type="submit">حذف نهائي</button>
+        <div class="field">
+          <label class="label" for="f-to" data-i18n="flt.to">إلى تاريخ</label>
+          <input class="input" type="date" id="f-to" name="to">
+        </div>
+        <div class="field">
+          <label class="label" for="f-gender" data-i18n="flt.gender">الجنس</label>
+          <select class="input" id="f-gender" name="gender">
+            <option value="" data-i18n="flt.all">الكل</option>
+            <option value="male" data-i18n="f.male">ذكر</option>
+            <option value="female" data-i18n="f.female">أنثى</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="f-age" data-i18n="flt.age">الفئة العمرية</label>
+          <select class="input" id="f-age" name="ageGroup">
+            <option value="" data-i18n="flt.all">الكل</option>
+            <option>18–29</option><option>30–39</option><option>40–49</option><option>50–59</option><option>60+</option>
+          </select>
+        </div>
+        <div class="filters__actions">
+          <button class="btn btn--sm" type="submit" data-i18n="flt.apply">تطبيق</button>
+          <button class="btn btn--ghost btn--sm" type="reset" data-i18n="flt.reset">مسح</button>
+        </div>
       </form>
-    </section>
+
+      <section class="kpis">
+        <div class="kpi"><div class="kpi__label" data-i18n="kpi.count">عدد التقييمات</div><div class="kpi__value num" id="k-count">—</div></div>
+        <div class="kpi"><div class="kpi__label" data-i18n="kpi.points">متوسط مجموع النقاط</div><div class="kpi__value num" id="k-points">—</div></div>
+        <div class="kpi"><div class="kpi__label" data-i18n="kpi.bio">متوسط العمر التقديري</div><div class="kpi__value num" id="k-bio">—</div><div class="kpi__sub" id="k-age"></div></div>
+        <div class="kpi"><div class="kpi__label" data-i18n="kpi.diff">متوسط الفارق</div><div class="kpi__value num" id="k-diff">—</div><div class="kpi__sub" id="k-split"></div></div>
+      </section>
+
+      <div class="two-col">
+        <section class="card">
+          <h2 class="card-title" data-i18n="dist.hr">توزيع تصنيفات اختبار الخطوة</h2>
+          <div class="bars" id="hr-dist"></div>
+        </section>
+        <section class="card">
+          <h2 class="card-title" data-i18n="dist.pbf">توزيع تصنيفات نسبة الدهون PBF</h2>
+          <div class="bars" id="pbf-dist"></div>
+        </section>
+      </div>
+
+      <section class="card mt-4">
+        <h2 class="card-title" data-i18n="grp.title">النتائج حسب الجنس والفئة العمرية</h2>
+        <div class="tabs" role="tablist">
+          <button class="tab is-active" role="tab" aria-selected="true" data-tab="gender" type="button" data-i18n="grp.gender">حسب الجنس</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="age" type="button" data-i18n="grp.age">حسب الفئة العمرية</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="cross" type="button" data-i18n="grp.cross">الجنس × الفئة العمرية</button>
+        </div>
+        <div class="table-scroll"><table class="table" id="group-table"></table></div>
+      </section>
+
+      <section class="card mt-4">
+        <h2 class="card-title" data-i18n="exp.title">تصدير التقارير</h2>
+        <p class="hint mb-4" data-i18n="exp.hint">تُطبق المرشحات الحالية على ملفات التصدير. التقارير لا تتضمن الاسم أو رقم التواصل افتراضيًا.</p>
+        <div class="export-row">
+          <a class="btn btn--sm" id="exp-stats" href="#" data-i18n="exp.stats">تقرير إحصائي مجمع (CSV)</a>
+          <a class="btn btn--ghost btn--sm" id="exp-records" href="#" data-i18n="exp.records">سجلات بدون بيانات شخصية (CSV)</a>
+          <a class="btn btn--danger btn--sm admin-only" id="exp-pii" href="#" hidden data-i18n="exp.pii">سجلات مع الاسم ورقم التواصل</a>
+        </div>
+      </section>
+
+      <details class="card mt-4 rules">
+        <summary class="card-title" data-i18n="rules.title">جداول التصنيف المعتمدة (من قاعدة البيانات)</summary>
+        <div class="two-col mt-4">
+          <div class="table-scroll"><table class="table" id="rules-hr"></table></div>
+          <div class="table-scroll"><table class="table" id="rules-pbf"></table></div>
+        </div>
+      </details>
     </div>
 
-    <!-- الحسابات — admin فقط -->
+    <!-- ═════════ السجلات (admin) ═════════ -->
+    <div class="view" data-view="records" hidden>
+      <p class="hint mb-4" data-i18n="rec.filterHint">تُطبق مرشحات التاريخ والجنس والفئة العمرية من قسم «التقارير» على هذه القائمة أيضًا.</p>
+      <section class="card" id="records-section">
+        <div class="records-head">
+          <h2 class="card-title" data-i18n="rec.title">السجلات الفردية</h2>
+          <form id="search-form" class="search" role="search">
+            <label class="sr-only" for="q" data-i18n="rec.search">بحث</label>
+            <input class="input" id="q" type="search" data-i18n-placeholder="rec.searchPh" placeholder="بحث بالاسم أو الرقم أو رقم السجل">
+          </form>
+        </div>
+        <div class="table-scroll">
+          <table class="table table--records">
+            <thead>
+              <tr>
+                <th data-i18n="rec.id">#</th><th data-i18n="rec.name">الاسم</th><th data-i18n="rec.gender">الجنس</th>
+                <th data-i18n="rec.age">العمر</th><th data-i18n="rec.phone">رقم التواصل</th><th data-i18n="rec.hr">النبض</th>
+                <th data-i18n="rec.hrClass">تصنيف النبض</th><th data-i18n="rec.pbf">PBF</th><th data-i18n="rec.pbfClass">تصنيف PBF</th>
+                <th data-i18n="rec.points">النقاط</th><th data-i18n="rec.bio">العمر التقديري</th><th data-i18n="rec.diff">الفارق</th>
+                <th data-i18n="rec.date">التاريخ</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="records-body"></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <button class="btn btn--ghost btn--sm" id="prev-page" type="button" data-i18n="rec.prev">السابق</button>
+          <span id="page-info" class="hint"></span>
+          <button class="btn btn--ghost btn--sm" id="next-page" type="button" data-i18n="rec.next">التالي</button>
+        </div>
+      </section>
+
+      <section class="card mt-4 danger-zone">
+        <h2 class="card-title" data-i18n="purge.title">حذف السجلات القديمة</h2>
+        <p class="hint mb-4" data-i18n="purge.hint">تنفيذ سياسة الاحتفاظ بالبيانات: يحذف نهائيًا كل السجلات المنشأة قبل التاريخ المحدد.</p>
+        <form class="inline-form" id="purge-form">
+          <div class="field">
+            <label class="label" for="purge-before" data-i18n="purge.before">حذف السجلات قبل تاريخ</label>
+            <input class="input" type="date" id="purge-before" required>
+          </div>
+          <button class="btn btn--danger btn--sm" type="submit" data-i18n="purge.submit">حذف نهائي</button>
+        </form>
+      </section>
+    </div>
+
+    <!-- ═════════ الحسابات (admin) ═════════ -->
     <div class="view" data-view="users" hidden>
       <section class="card">
-        <h2 class="card-title">حسابات الإدارة</h2>
+        <h2 class="card-title" data-i18n="usr.title">حسابات الإدارة</h2>
         <div class="table-scroll">
           <table class="table">
-            <thead><tr><th>اسم المستخدم</th><th>الاسم المعروض</th><th>الدور</th><th>الحالة</th><th>آخر دخول</th><th></th></tr></thead>
+            <thead><tr>
+              <th data-i18n="usr.username">اسم المستخدم</th><th data-i18n="usr.display">الاسم المعروض</th><th data-i18n="usr.role">الدور</th>
+              <th data-i18n="usr.status">الحالة</th><th data-i18n="usr.lastLogin">آخر دخول</th><th></th>
+            </tr></thead>
             <tbody id="users-body"></tbody>
           </table>
         </div>
       </section>
 
       <section class="card mt-4">
-        <h2 class="card-title">إضافة حساب</h2>
+        <h2 class="card-title" data-i18n="usr.add">إضافة حساب</h2>
         <div class="alert" id="user-alert" role="alert"></div>
         <form class="form-grid" id="user-form" autocomplete="off">
           <div class="field">
-            <label class="label" for="u-username">اسم المستخدم</label>
+            <label class="label" for="u-username" data-i18n="usr.username">اسم المستخدم</label>
             <input class="input input--ltr" id="u-username" autocapitalize="none" spellcheck="false" required>
-            <p class="hint">أحرف لاتينية أو أرقام أو (. _ -)</p>
+            <p class="hint" data-i18n="usr.usernameHint">أحرف لاتينية أو أرقام أو (. _ -)</p>
           </div>
           <div class="field">
-            <label class="label" for="u-name">الاسم المعروض</label>
+            <label class="label" for="u-name" data-i18n="usr.display">الاسم المعروض</label>
             <input class="input" id="u-name">
           </div>
           <div class="field">
-            <label class="label" for="u-role">الدور</label>
+            <label class="label" for="u-role" data-i18n="usr.role">الدور</label>
             <select class="input" id="u-role">
-              <option value="analyst">محلل — تقارير مجمعة فقط</option>
-              <option value="admin">مدير — صلاحية كاملة</option>
+              <option value="analyst" data-i18n="usr.optAnalyst">محلل — تقارير مجمعة فقط</option>
+              <option value="admin" data-i18n="usr.optAdmin">مدير — صلاحية كاملة</option>
             </select>
           </div>
           <div class="field">
-            <label class="label" for="u-password">كلمة المرور المؤقتة</label>
+            <label class="label" for="u-password" data-i18n="usr.tempPassword">كلمة المرور المؤقتة</label>
             <input class="input input--ltr" id="u-password" type="password" autocomplete="new-password" minlength="12" required>
-            <p class="hint">12 حرفًا على الأقل</p>
+            <p class="hint" data-i18n="usr.min12">12 حرفًا على الأقل</p>
           </div>
           <div class="form-grid__actions">
-            <button class="btn btn--sm" type="submit">إضافة الحساب</button>
+            <button class="btn btn--sm" type="submit" data-i18n="usr.submit">إضافة الحساب</button>
           </div>
         </form>
       </section>
     </div>
 
-    <!-- سجل التدقيق — admin فقط -->
+    <!-- ═════════ سجل التدقيق (admin) ═════════ -->
     <div class="view" data-view="audit" hidden>
       <section class="card">
-        <h2 class="card-title">سجل التدقيق <span class="hint">(آخر 200 إجراء)</span></h2>
+        <h2 class="card-title"><span data-i18n="aud.title">سجل التدقيق</span> <span class="hint" data-i18n="aud.sub">(آخر 200 إجراء)</span></h2>
         <div class="table-scroll">
           <table class="table">
-            <thead><tr><th>التاريخ</th><th>المستخدم</th><th>الإجراء</th><th>التفاصيل</th><th>عنوان IP</th></tr></thead>
+            <thead><tr>
+              <th data-i18n="aud.date">التاريخ</th><th data-i18n="aud.user">المستخدم</th><th data-i18n="aud.action">الإجراء</th>
+              <th data-i18n="aud.details">التفاصيل</th><th data-i18n="aud.ip">عنوان IP</th>
+            </tr></thead>
             <tbody id="audit-body"></tbody>
           </table>
         </div>
       </section>
     </div>
 
-    <!-- حسابي -->
+    <!-- ═════════ حسابي ═════════ -->
     <div class="view" data-view="account" hidden>
       <section class="card narrow-card">
-        <h2 class="card-title">تغيير كلمة المرور</h2>
+        <h2 class="card-title" data-i18n="pw.title">تغيير كلمة المرور</h2>
         <div class="alert" id="pw-alert" role="alert"></div>
         <form id="pw-form">
           <div class="field">
-            <label class="label" for="pw-current">كلمة المرور الحالية</label>
+            <label class="label" for="pw-current" data-i18n="pw.current">كلمة المرور الحالية</label>
             <input class="input input--ltr" id="pw-current" type="password" autocomplete="current-password" required>
           </div>
           <div class="field mt-4">
-            <label class="label" for="pw-new">كلمة المرور الجديدة</label>
+            <label class="label" for="pw-new" data-i18n="pw.new">كلمة المرور الجديدة</label>
             <input class="input input--ltr" id="pw-new" type="password" autocomplete="new-password" minlength="12" required>
-            <p class="hint">12 حرفًا على الأقل. سيتم إنهاء جلساتك على الأجهزة الأخرى.</p>
+            <p class="hint" data-i18n="pw.hint">12 حرفًا على الأقل. سيتم إنهاء جلساتك على الأجهزة الأخرى.</p>
           </div>
           <div class="field mt-4">
-            <label class="label" for="pw-confirm">تأكيد كلمة المرور الجديدة</label>
+            <label class="label" for="pw-confirm" data-i18n="pw.confirm">تأكيد كلمة المرور الجديدة</label>
             <input class="input input--ltr" id="pw-confirm" type="password" autocomplete="new-password" required>
           </div>
-          <div class="actions"><button class="btn btn--sm" type="submit">حفظ كلمة المرور</button></div>
+          <div class="actions"><button class="btn btn--sm" type="submit" data-i18n="pw.submit">حفظ كلمة المرور</button></div>
         </form>
       </section>
     </div>

@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const { fail } = require('./i18n');
 
 function securityHeaders(req, res, next) {
   res.setHeader('Content-Security-Policy', [
@@ -37,20 +38,20 @@ function sameOrigin(req, res, next) {
   if (origin) {
     try {
       if (new URL(origin).host !== req.get('host')) {
-        return res.status(403).json({ error: 'طلب غير مسموح.' });
+        return fail(req, res, 403, 'e.forbiddenRequest');
       }
     } catch {
-      return res.status(403).json({ error: 'طلب غير مسموح.' });
+      return fail(req, res, 403, 'e.forbiddenRequest');
     }
   }
   if (req.method !== 'DELETE' && !req.is('application/json')) {
-    return res.status(415).json({ error: 'نوع المحتوى غير مدعوم.' });
+    return fail(req, res, 415, 'e.contentType');
   }
   next();
 }
 
 /** محدد معدل بسيط في الذاكرة (لكل عنوان IP). */
-function rateLimit({ windowMs, max, message }) {
+function rateLimit({ windowMs, max, messageKey }) {
   const hits = new Map();
   setInterval(() => {
     const now = Date.now();
@@ -68,7 +69,7 @@ function rateLimit({ windowMs, max, message }) {
     entry.count += 1;
     if (entry.count > max) {
       res.setHeader('Retry-After', Math.ceil((entry.reset - now) / 1000));
-      return res.status(429).json({ error: message });
+      return fail(req, res, 429, messageKey);
     }
     next();
   };

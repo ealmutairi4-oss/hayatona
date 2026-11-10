@@ -4,6 +4,7 @@ const path = require('node:path');
 const express = require('express');
 const config = require('./config');
 const { securityHeaders, sameOrigin } = require('./security');
+const { fail } = require('./i18n');
 
 function createApp() {
   const app = express();
@@ -26,7 +27,7 @@ function createApp() {
   app.use('/api', sameOrigin);
   app.use('/api', require('./routes/public'));
   app.use('/api/admin', require('./routes/admin'));
-  app.use('/api', (req, res) => res.status(404).json({ error: 'غير موجود.' }));
+  app.use('/api', (req, res) => fail(req, res, 404, 'e.notFound'));
 
   const publicDir = path.join(__dirname, '..', 'public');
   app.get('/result', (req, res) => res.sendFile(path.join(publicDir, 'result.html')));
@@ -35,10 +36,10 @@ function createApp() {
   app.use(express.static(publicDir, { extensions: ['html'], maxAge: config.isProduction ? '1h' : 0 }));
 
   app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-    if (err.type === 'entity.parse.failed') return res.status(400).json({ error: 'بيانات غير صالحة.' });
-    if (err.type === 'entity.too.large') return res.status(413).json({ error: 'حجم البيانات كبير.' });
+    if (err.type === 'entity.parse.failed') return fail(req, res, 400, 'e.badData');
+    if (err.type === 'entity.too.large') return fail(req, res, 413, 'e.tooLarge');
     console.error(err);
-    res.status(500).json({ error: 'حدث خطأ غير متوقع. يرجى المحاولة لاحقًا.' });
+    fail(req, res, 500, 'e.server');
   });
 
   return app;

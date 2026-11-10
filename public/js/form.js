@@ -32,26 +32,27 @@
   /** تحقق أولي في المتصفح لتحسين التجربة — التحقق النهائي والتصنيف يتمان في الخادم. */
   function validate(v) {
     const e = {};
-    if (!v.name) e.name = 'هذا الحقل مطلوب.';
-    else if (v.name.length < 2) e.name = 'يرجى إدخال اسم بين حرفين و100 حرف.';
+    const T = I18N.t;
+    if (!v.name) e.name = T('v.required');
+    else if (v.name.length < 2) e.name = T('v.nameLength');
 
-    if (!v.gender) e.gender = 'يرجى اختيار الجنس.';
+    if (!v.gender) e.gender = T('v.gender');
 
-    if (!v.age) e.age = 'هذا الحقل مطلوب.';
-    else if (!/^\d+$/.test(v.age)) e.age = 'يرجى إدخال العمر رقمًا صحيحًا بالسنوات.';
-    else if (Number(v.age) < 18) e.age = 'يجب أن يكون العمر 18 سنة فأكثر.';
-    else if (Number(v.age) > 120) e.age = 'يرجى التأكد من العمر المدخل.';
+    if (!v.age) e.age = T('v.required');
+    else if (!/^\d+$/.test(v.age)) e.age = T('v.ageNumber');
+    else if (Number(v.age) < 18) e.age = T('v.ageMin');
+    else if (Number(v.age) > 120) e.age = T('v.ageMax');
 
-    if (!v.phone) e.phone = 'هذا الحقل مطلوب.';
-    else if (!/^\+?\d{9,15}$/.test(v.phone)) e.phone = 'يرجى إدخال رقم تواصل صحيح (من 9 إلى 15 رقمًا).';
+    if (!v.phone) e.phone = T('v.required');
+    else if (!/^\+?\d{9,15}$/.test(v.phone)) e.phone = T('v.phone');
 
-    if (!v.heartRate) e.heartRate = 'هذا الحقل مطلوب.';
-    else if (!/^-?\d+$/.test(v.heartRate)) e.heartRate = 'يرجى إدخال النبض عددًا صحيحًا بدون كسور.';
-    else if (Number(v.heartRate) <= 0) e.heartRate = 'يجب أن يكون النبض أكبر من صفر.';
+    if (!v.heartRate) e.heartRate = T('v.required');
+    else if (!/^-?\d+$/.test(v.heartRate)) e.heartRate = T('v.hrNumber');
+    else if (Number(v.heartRate) <= 0) e.heartRate = T('v.hrPositive');
 
-    if (!v.pbf) e.pbf = 'هذا الحقل مطلوب.';
-    else if (!/^-?(\d+(\.\d+)?|\.\d+)$/.test(v.pbf)) e.pbf = 'يرجى إدخال نسبة الدهون رقمًا (تُقبل الكسور العشرية).';
-    else if (Number(v.pbf) < 0 || Number(v.pbf) > 100) e.pbf = 'يجب أن تكون نسبة الدهون بين 0% و100%.';
+    if (!v.pbf) e.pbf = T('v.required');
+    else if (!/^-?(\d+(\.\d+)?|\.\d+)$/.test(v.pbf)) e.pbf = T('v.pbfNumber');
+    else if (Number(v.pbf) < 0 || Number(v.pbf) > 100) e.pbf = T('v.pbfRange');
     return e;
   }
 
@@ -79,7 +80,7 @@
   function setLoading(loading) {
     submitBtn.disabled = loading;
     submitBtn.classList.toggle('is-loading', loading);
-    submitBtn.querySelector('.btn-label').textContent = loading ? 'جارٍ الحساب…' : 'إرسال النتائج';
+    submitBtn.querySelector('.btn-label').textContent = I18N.t(loading ? 'form.submitting' : 'form.submit');
   }
 
   form.addEventListener('submit', async (event) => {
@@ -100,7 +101,7 @@
         body: JSON.stringify(values),
       });
       if (ok && data.token) {
-        try { sessionStorage.setItem(`ba-result:${data.token}`, JSON.stringify(data.result)); } catch { /* اختياري */ }
+        try { sessionStorage.setItem(`ba-result:${I18N.lang}:${data.token}`, JSON.stringify(data.result)); } catch { /* اختياري */ }
         window.location.assign(`/result#${encodeURIComponent(data.token)}`);
         return;
       }
@@ -108,13 +109,16 @@
         showErrors(data.fields);
         showAlert(data.error);
       } else {
-        showAlert(data.error || 'تعذر إرسال البيانات. يرجى المحاولة مرة أخرى.');
+        showAlert(data.error || I18N.t('net.submit'));
       }
     } catch {
-      showAlert('تعذر الاتصال بالخادم. تحقق من اتصالك بالإنترنت وحاول مرة أخرى.');
+      showAlert(I18N.t('net.offline'));
     }
     setLoading(false);
   });
+
+  // عند تغيير اللغة: إخفاء رسائل الخطأ السابقة (كانت باللغة الأخرى)
+  document.addEventListener('langchange', () => { FIELDS.forEach((f) => setError(f, '')); showAlert(''); });
 
   // إعادة ضبط الزر عند الرجوع من صفحة النتيجة (ذاكرة التخزين المؤقت للتنقل في Safari)
   window.addEventListener('pageshow', () => setLoading(false));

@@ -5,13 +5,15 @@
   const alertBox = document.getElementById('login-alert');
   const btn = document.getElementById('login-btn');
 
+  document.addEventListener('langchange', () => alertBox.classList.remove('is-visible'));
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     alertBox.classList.remove('is-visible');
     const username = form.elements.username.value.trim();
     const password = form.elements.password.value;
     if (!username || !password) {
-      alertBox.textContent = 'يرجى إدخال اسم المستخدم وكلمة المرور.';
+      alertBox.textContent = I18N.t('login.missing');
       alertBox.classList.add('is-visible');
       return;
     }
@@ -23,9 +25,9 @@
         body: JSON.stringify({ username, password }),
       });
       if (ok) { window.location.replace('/admin'); return; }
-      alertBox.textContent = data.error || 'تعذر تسجيل الدخول.';
+      alertBox.textContent = data.error || I18N.t('login.failed');
     } catch {
-      alertBox.textContent = 'تعذر الاتصال بالخادم.';
+      alertBox.textContent = I18N.t('login.offline');
     }
     alertBox.classList.add('is-visible');
     form.elements.password.value = '';

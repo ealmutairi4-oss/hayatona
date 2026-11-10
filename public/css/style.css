@@ -74,10 +74,16 @@ a { color: var(--teal-dark); }
   align-items: center;
   justify-content: space-between;
   gap: var(--s4);
-  min-height: 72px;
+  min-height: 76px;
+  /* موضع الشعارين ثابت في اللغتين: BAE Systems يمينًا، عيادات حياتنا يسارًا */
+  direction: rtl;
 }
-.logo { display: flex; align-items: center; height: 44px; }
-.logo img { max-height: 44px; max-width: 150px; width: auto; height: auto; display: block; }
+.site-header__inner > * { direction: inherit; }
+:root[dir="ltr"] .site-header__title, :root[dir="ltr"] .lang-toggle { direction: ltr; }
+.logo { display: flex; align-items: center; flex: none; }
+.logo img { display: block; width: auto; }
+.logo--bae img { height: 30px; }
+.logo--hayatna img { height: 56px; }
 .logo-fallback {
   font-weight: 700; font-size: 15px; color: var(--navy);
   border: 1.5px dashed var(--line); border-radius: 8px; padding: 6px 10px; white-space: nowrap;
@@ -86,6 +92,19 @@ a { color: var(--teal-dark); }
   flex: 1; text-align: center; font-size: 15px; font-weight: 600; color: var(--ink-2);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
+.header-end { display: flex; align-items: center; gap: var(--s3); flex: none; }
+
+.lang-toggle {
+  font: inherit; font-size: 14px; font-weight: 600; color: var(--navy);
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 40px; padding: 0 14px; border-radius: 999px;
+  background: #fff; border: 1.5px solid var(--line); cursor: pointer;
+  -webkit-tap-highlight-color: transparent; white-space: nowrap;
+}
+.lang-toggle:hover { border-color: var(--teal); background: var(--teal-soft); }
+.lang-toggle:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+.lang-toggle svg { flex: none; color: var(--teal-dark); }
+.lang-toggle .short { display: none; }
 
 /* ───────── الهيكل ───────── */
 main {
@@ -160,6 +179,7 @@ main {
 .input[aria-invalid="true"] { border-color: var(--danger); }
 .input[aria-invalid="true"]:focus { box-shadow: 0 0 0 4px rgba(180, 35, 24, .14); }
 .input--ltr { direction: ltr; text-align: right; }
+:root[dir="ltr"] .input--ltr { text-align: left; }
 
 .input-wrap { position: relative; }
 .input-wrap .unit {
@@ -293,10 +313,14 @@ main {
 /* ───────── التجاوب ───────── */
 @media (max-width: 720px) {
   main { padding: var(--s4) var(--s4) var(--s6); }
-  .site-header__inner { min-height: 60px; padding: var(--s2) var(--s4); }
+  .site-header__inner { min-height: 64px; padding: var(--s2) var(--s4); }
   .site-header__title { display: none; }
-  .logo, .logo img { max-height: 36px; height: 36px; }
-  .logo img { height: auto; max-width: 120px; }
+  .logo--bae img { height: 22px; }
+  .logo--hayatna img { height: 46px; }
+  .header-end { gap: var(--s2); }
+  .lang-toggle { min-height: 36px; padding: 0 10px; }
+  .lang-toggle .long { display: none; }
+  .lang-toggle .short { display: inline; }
   .hero { padding: var(--s5) var(--s4); }
   .hero h1 { font-size: 23px; }
   .card { padding: var(--s4); }

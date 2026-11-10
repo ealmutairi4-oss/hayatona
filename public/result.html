@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-title-key="res.pageTitle">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -7,6 +7,7 @@
   <meta name="format-detection" content="telephone=no">
   <meta name="robots" content="noindex">
   <title>العمر البيولوجي — النتيجة</title>
+  <script src="/js/i18n.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
@@ -16,20 +17,18 @@
 <body>
   <header class="site-header">
     <div class="site-header__inner">
-      <a class="logo" href="/" aria-label="BAE Systems">
-        <img src="/assets/logos/bae-systems.png" alt="BAE Systems" data-fallback="BAE Systems">
-      </a>
-      <div class="site-header__title">نتيجة العمر البيولوجي</div>
-      <span class="logo">
-        <img src="/assets/logos/hayatna.png" alt="عيادات حياتنا" data-fallback="عيادات حياتنا">
-      </span>
+      <a class="logo logo--bae" href="/"><img src="/assets/logos/bae-systems.png" alt="BAE Systems" data-i18n-alt="brand.bae" data-fallback="BAE Systems"></a>
+      <div class="site-header__title" data-i18n="res.headerTitle">نتيجة العمر البيولوجي</div>
+      <div class="header-end">
+        <span class="logo logo--hayatna"><img src="/assets/logos/hayatna.png" alt="عيادات حياتنا" data-i18n-alt="brand.hayatna" data-fallback="عيادات حياتنا"></span>
+      </div>
     </div>
   </header>
 
   <main>
     <div class="narrow">
       <div id="state" class="state" aria-live="polite">
-        <p>جارٍ تحميل النتيجة…</p>
+        <p data-i18n="res.loading">جارٍ تحميل النتيجة…</p>
       </div>
 
       <div id="result" hidden>
@@ -38,17 +37,17 @@
           <span class="chip"><span aria-hidden="true">●</span> <span id="r-gender"></span></span>
         </div>
 
-        <section class="result-hero" aria-label="ملخص النتيجة">
+        <section class="result-hero" data-i18n-aria="res.summary" aria-label="ملخص النتيجة">
           <div>
-            <div class="metric-label">العمر الزمني</div>
+            <div class="metric-label" data-i18n="res.chrono">العمر الزمني</div>
             <div class="metric-value num" id="r-age"></div>
-            <div class="metric-unit">سنة</div>
+            <div class="metric-unit" data-i18n="res.years">سنة</div>
           </div>
           <div class="divider" aria-hidden="true"></div>
           <div class="bio">
-            <div class="metric-label">العمر البيولوجي التقديري</div>
+            <div class="metric-label" data-i18n="res.bio">العمر البيولوجي التقديري</div>
             <div class="metric-value num" id="r-bio"></div>
-            <div class="metric-unit">سنة</div>
+            <div class="metric-unit" data-i18n="res.years">سنة</div>
           </div>
         </section>
 
@@ -56,7 +55,7 @@
           <div class="diff-value num" id="r-diff"></div>
           <div>
             <div class="diff-text" id="r-diff-text"></div>
-            <div class="diff-sub">الفارق بين العمر البيولوجي التقديري والعمر الزمني</div>
+            <div class="diff-sub" data-i18n="res.diffSub">الفارق بين العمر البيولوجي التقديري والعمر الزمني</div>
           </div>
         </div>
 
@@ -66,9 +65,9 @@
               <span class="test-icon" aria-hidden="true">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg>
               </span>
-              نبض القلب بعد اختبار الخطوة
+              <span data-i18n="res.hr">نبض القلب بعد اختبار الخطوة</span>
             </div>
-            <div class="test-value"><span class="num" id="r-hr"></span><small>ضربة/دقيقة</small></div>
+            <div class="test-value"><span class="num" id="r-hr"></span><small data-i18n="f.hrUnit">ضربة/دقيقة</small></div>
             <span class="badge" id="r-hr-class"></span>
           </section>
 
@@ -77,7 +76,7 @@
               <span class="test-icon" aria-hidden="true">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6.4 6.4"/></svg>
               </span>
-              نسبة الدهون في الجسم (PBF)
+              <span data-i18n="res.pbf">نسبة الدهون في الجسم (PBF)</span>
             </div>
             <div class="test-value"><span class="num" id="r-pbf"></span><small>%</small></div>
             <span class="badge" id="r-pbf-class"></span>
@@ -85,27 +84,27 @@
         </div>
 
         <section class="card recs" aria-labelledby="recs-title">
-          <h2 class="section-title" id="recs-title">توصيات عامة للنشاط البدني</h2>
-          <h3 class="rec-group-title">بناءً على نتائجك</h3>
+          <h2 class="section-title" id="recs-title" data-i18n="res.recs">توصيات عامة للنشاط البدني</h2>
+          <h3 class="rec-group-title" data-i18n="res.recsPersonal">بناءً على نتائجك</h3>
           <ul class="rec-list" id="r-recs-personal"></ul>
-          <h3 class="rec-group-title">إرشادات منظمة الصحة العالمية للبالغين</h3>
+          <h3 class="rec-group-title" data-i18n="res.recsGeneral">إرشادات منظمة الصحة العالمية للبالغين</h3>
           <ul class="rec-list" id="r-recs-general"></ul>
         </section>
 
-        <p class="disclaimer">
+        <p class="disclaimer" data-i18n-html="res.disclaimer">
           هذه النتيجة <strong>تقدير حسابي وفق معادلة الموقع</strong> وليست تشخيصًا طبيًا، والتوصيات توعوية عامة.
           استشر الطبيب قبل البدء ببرنامج رياضي جديد إذا كانت لديك حالة صحية أو أعراض.
         </p>
 
         <div class="result-actions">
-          <button class="btn btn--ghost" type="button" id="print-btn">طباعة / حفظ PDF</button>
-          <a class="btn" href="/">تقييم جديد</a>
+          <button class="btn btn--ghost" type="button" id="print-btn" data-i18n="res.print">طباعة / حفظ PDF</button>
+          <a class="btn" href="/" data-i18n="res.new">تقييم جديد</a>
         </div>
       </div>
     </div>
   </main>
 
-  <footer class="site-footer">BAE Systems × عيادات حياتنا</footer>
+  <footer class="site-footer" data-i18n="footer">BAE Systems × عيادات حياتنا</footer>
 
   <script src="/js/common.js"></script>
   <script src="/js/result.js"></script>

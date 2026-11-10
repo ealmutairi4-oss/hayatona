@@ -4,6 +4,7 @@ const crypto = require('node:crypto');
 const db = require('./db');
 const config = require('./config');
 const { randomToken, sha256 } = require('./security');
+const { fail } = require('./i18n');
 
 const COOKIE = 'ba_admin';
 const SCRYPT = { N: 16384, r: 8, p: 1, keylen: 64 };
@@ -78,7 +79,7 @@ function destroySession(req) {
 /** يتحقق من جلسة الإدارة ويجدد مدتها. */
 function requireAdmin(req, res, next) {
   const token = readCookie(req, COOKIE);
-  if (!token) return res.status(401).json({ error: 'يرجى تسجيل الدخول.' });
+  if (!token) return fail(req, res, 401, 'e.loginRequired');
   const d = db.get();
   const now = Date.now();
   const row = d.prepare(`
@@ -89,7 +90,7 @@ function requireAdmin(req, res, next) {
   if (!row || row.expires_at < now) {
     if (row) d.prepare('DELETE FROM sessions WHERE token_hash = ?').run(row.token_hash);
     res.clearCookie(COOKIE, { path: '/' });
-    return res.status(401).json({ error: 'انتهت الجلسة. يرجى تسجيل الدخول مجددًا.' });
+    return fail(req, res, 401, 'e.sessionExpired');
   }
   d.prepare('UPDATE sessions SET expires_at = ? WHERE token_hash = ?').run(now + idleMs(), row.token_hash);
   res.cookie(COOKIE, token, cookieOptions());
@@ -101,7 +102,7 @@ function requireAdmin(req, res, next) {
 function requireRole(role) {
   return (req, res, next) => {
     if (!req.admin || req.admin.role !== role) {
-      return res.status(403).json({ error: 'لا تملك صلاحية الوصول إلى هذه البيانات.' });
+      return fail(req, res, 403, 'e.forbidden');
     }
     next();
   };
