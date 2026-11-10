@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#052D3A">
+  <meta name="format-detection" content="telephone=no">
+  <title>العمر البيولوجي — إدخال البيانات</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="logo" href="/" aria-label="BAE Systems">
+        <img src="/assets/logos/bae-systems.png" alt="BAE Systems" data-fallback="BAE Systems">
+      </a>
+      <div class="site-header__title">العمر البيولوجي</div>
+      <span class="logo">
+        <img src="/assets/logos/hayatna.png" alt="عيادات حياتنا" data-fallback="عيادات حياتنا">
+      </span>
+    </div>
+  </header>
+
+  <main>
+    <div class="narrow">
+      <section class="hero">
+        <p class="eyebrow">تقييم اللياقة البدنية</p>
+        <h1>احسب عمرك البيولوجي</h1>
+        <p>أدخل بياناتك ونتائج اختباري اللياقة لتحصل على تقدير حسابي لعمرك البيولوجي وتصنيف كل اختبار، مع توصيات عامة للنشاط البدني.</p>
+      </section>
+
+      <form id="assessment-form" novalidate>
+        <div class="alert" id="form-alert" role="alert"></div>
+
+        <section class="card" aria-labelledby="basic-title">
+          <h2 class="section-title" id="basic-title"><span class="step" aria-hidden="true">1</span>المعلومات الأساسية</h2>
+          <div class="grid-2">
+            <div class="field field--full">
+              <label class="label" for="name">الاسم<span class="req" aria-hidden="true">*</span></label>
+              <input class="input" id="name" name="name" type="text" autocomplete="name" maxlength="100" required aria-describedby="name-error">
+              <p class="error" id="name-error" aria-live="polite"></p>
+            </div>
+
+            <div class="field field--full">
+              <span class="label" id="gender-label">الجنس<span class="req" aria-hidden="true">*</span></span>
+              <div class="segmented" role="radiogroup" aria-labelledby="gender-label" aria-describedby="gender-error" id="gender">
+                <input type="radio" id="gender-male" name="gender" value="male" required>
+                <label for="gender-male">ذكر</label>
+                <input type="radio" id="gender-female" name="gender" value="female">
+                <label for="gender-female">أنثى</label>
+              </div>
+              <p class="error" id="gender-error" aria-live="polite"></p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="age">العمر<span class="req" aria-hidden="true">*</span></label>
+              <div class="input-wrap">
+                <input class="input input--ltr" id="age" name="age" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" maxlength="3" required aria-describedby="age-hint age-error">
+                <span class="unit">سنة</span>
+              </div>
+              <p class="hint" id="age-hint">18 سنة فأكثر</p>
+              <p class="error" id="age-error" aria-live="polite"></p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="phone">رقم التواصل<span class="req" aria-hidden="true">*</span></label>
+              <input class="input input--ltr" id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="05XXXXXXXX" required aria-describedby="phone-error">
+              <p class="error" id="phone-error" aria-live="polite"></p>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="tests-title">
+          <h2 class="section-title" id="tests-title"><span class="step" aria-hidden="true">2</span>نتائج اختبارات اللياقة</h2>
+          <div class="grid-2">
+            <div class="field">
+              <label class="label" for="heartRate">نبض القلب بعد اختبار الخطوة<span class="req" aria-hidden="true">*</span></label>
+              <div class="input-wrap">
+                <input class="input input--ltr" id="heartRate" name="heartRate" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" maxlength="3" required aria-describedby="hr-hint heartRate-error">
+                <span class="unit">ضربة/دقيقة</span>
+              </div>
+              <p class="hint" id="hr-hint">بعد اختبار الخطوة لمدة 3 دقائق — عدد صحيح</p>
+              <p class="error" id="heartRate-error" aria-live="polite"></p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="pbf">نسبة الدهون في الجسم (PBF)<span class="req" aria-hidden="true">*</span></label>
+              <div class="input-wrap">
+                <input class="input input--ltr" id="pbf" name="pbf" type="text" inputmode="decimal" autocomplete="off" maxlength="6" required aria-describedby="pbf-hint pbf-error">
+                <span class="unit">%</span>
+              </div>
+              <p class="hint" id="pbf-hint">من جهاز InBody — يقبل الكسور العشرية (مثال: 23.5)</p>
+              <p class="error" id="pbf-error" aria-live="polite"></p>
+            </div>
+          </div>
+        </section>
+
+        <div class="actions">
+          <button class="btn btn--block" type="submit" id="submit-btn">
+            <span class="spinner" aria-hidden="true"></span>
+            <span class="btn-label">إرسال النتائج</span>
+          </button>
+          <p class="disclaimer">
+            النتيجة <strong>تقدير حسابي وفق معادلة الموقع</strong> وليست تشخيصًا طبيًا.
+            تُعامل بياناتك الصحية بسرية، ولا يطّلع على السجلات الفردية إلا المخولون من الإدارة.
+          </p>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer">BAE Systems × عيادات حياتنا</footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/form.js"></script>
+</body>
+</html>

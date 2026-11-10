@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#052D3A">
+  <meta name="robots" content="noindex, nofollow">
+  <title>دخول الإدارة — العمر البيولوجي</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <span class="logo"><img src="/assets/logos/bae-systems.png" alt="BAE Systems" data-fallback="BAE Systems"></span>
+      <div class="site-header__title">لوحة الإدارة</div>
+      <span class="logo"><img src="/assets/logos/hayatna.png" alt="عيادات حياتنا" data-fallback="عيادات حياتنا"></span>
+    </div>
+  </header>
+
+  <main>
+    <div class="login-wrap">
+      <form class="card" id="login-form" novalidate>
+        <h1 class="login-title">دخول الإدارة</h1>
+        <p class="hint mb-4">للحسابات المخولة فقط.</p>
+        <div class="alert" id="login-alert" role="alert"></div>
+        <div class="field">
+          <label class="label" for="username">اسم المستخدم</label>
+          <input class="input input--ltr" id="username" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+        </div>
+        <div class="field mt-4">
+          <label class="label" for="password">كلمة المرور</label>
+          <input class="input input--ltr" id="password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <div class="actions">
+          <button class="btn btn--block" type="submit" id="login-btn"><span class="spinner" aria-hidden="true"></span><span class="btn-label">دخول</span></button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/admin-login.js"></script>
+</body>
+</html>
