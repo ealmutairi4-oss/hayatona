@@ -83,7 +83,7 @@ a { color: var(--teal-dark); }
 .logo { display: flex; align-items: center; flex: none; }
 .logo img { display: block; width: auto; }
 .logo--bae img { height: 30px; }
-.logo--hayatna img { height: 56px; }
+.logo--hayatna img { height: 64px; }
 .logo-fallback {
   font-weight: 700; font-size: 15px; color: var(--navy);
   border: 1.5px dashed var(--line); border-radius: 8px; padding: 6px 10px; white-space: nowrap;
@@ -316,7 +316,7 @@ main {
   .site-header__inner { min-height: 64px; padding: var(--s2) var(--s4); }
   .site-header__title { display: none; }
   .logo--bae img { height: 22px; }
-  .logo--hayatna img { height: 46px; }
+  .logo--hayatna img { height: 54px; }
   .header-end { gap: var(--s2); }
   .lang-toggle { min-height: 36px; padding: 0 10px; }
   .lang-toggle .long { display: none; }
